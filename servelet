@@ -1,0 +1,89 @@
+package bankingapp.transaction;
+import java.io.IOException;
+import javax.servlet.ServletException;
+//import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class Transfer extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.getWriter().append("Served at: ").append(request.getContextPath());
+	}  
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	String accno_1=request.getParameter("accno1");
+	String pinno=request.getParameter("pinno");
+	String accno_2=request.getParameter("accno2");
+	String amount=request.getParameter("amount");
+	int pin_no=Integer.parseInt(pinno);
+	int amt=Integer.parseInt(amount);
+	DatabaseConnection dbConn=new DatabaseConnection(accno_1,pin_no,amt);
+	String msg=dbConn.getDbConnection();
+	if(msg.equals("null"))
+	{     response.getWriter().println("failed to connect Database");
+	
+		}}}
+package bankingapp.transaction;
+import java.sql.*;
+
+public class DatabaseConnection {
+        Connection con=null;
+		Statement st1,st2;
+		PreparedStatement pst=null;
+		ResultSet rs1,rs2;
+		String account1,result;
+		int pinNo,fund,balanceAmt,iD=1;
+		public DatabaseConnection(String account1,int pinNo,int fund)
+		{
+			this.account1=account1;
+			this.pinNo=pinNo;
+			this.fund=fund;
+		}
+		
+		public String getDbConnection()
+		{
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+				try {
+					con=DriverManager.getConnection("jdbc:mysql://sql12.freemysqlhosting.net/sql12358072","sql12358072","QW7CppSuVN");
+					st1=con.createStatement();
+					st2=con.createStatement();
+					String sql="select*from logintable where accno=account1";
+					rs1=st1.executeQuery(sql);
+					String sql1="select Balance form AccInfo where id=iD";
+			        rs2=st2.executeQuery(sql1);
+					
+					while(rs1.next() && rs2.next())
+					{
+						if((account1.equals(rs1.getString("accno")) && (pinNo==rs1.getInt(2))))
+						{
+					   
+					        balanceAmt=rs2.getInt(4)-fund;
+					        result="Transaction is successful";
+					        insertData(balanceAmt);
+							
+						}
+				}
+					iD++;
+					
+				} catch (SQLException e) {
+					System.out.println(e);
+					result="Transaction is unsuccessful";
+				}
+			} catch (ClassNotFoundException e) {
+				result="failed to connect Database";
+			}
+			return result;
+		}
+       public void insertData(int balAmt)
+		{
+			try {
+				pst=con.prepareStatement("insert into AccInfo(AccNo,Name,Balance) values('?','?','?')");
+				pst.setString(1,account1);
+				pst.setString(2, "Customer 1");
+				pst.setInt(3,balAmt);
+				pst.executeUpdate();
+			} catch (SQLException e) {
+				System.out.println(e);
+			}}}
