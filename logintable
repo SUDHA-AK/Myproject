@@ -1,0 +1,6 @@
+Create table logintable
+{       accno VARCHAR(10),
+         pinno   int
+};
+insert into logintable( AccNo,PiNo) values(‘AKS001’,abcd01);
+insert into logintable(AccNo,PiNo) values(‘AKS002’,abcd02);
