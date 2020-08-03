@@ -1,0 +1,55 @@
+package bankingapp.transaction;
+import java.beans.Statement;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.*;
+import javax.servlet.ServletException;
+//import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class ViewStatementServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	
+		response.getWriter().append("Served at: ").append(request.getContextPath());
+	}
+
+protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String acno=request.getParameter("accno");
+		int pin=Integer.parseInt(request.getParameter("Pinno"));
+		
+		PrintWriter out=response.getWriter();
+		out.println("<h2>Your Accno is</h2>"+acno);
+		out.println("<h3>The Transaction Details</h3>");
+		out.println("<table><tr><td>AccountNo</td><td>Balance</td></tr>");
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			try {
+				Connection con=DriverManager.getConnection("jdbc:mysql://sql12.freemysqlhosting.net/sql12358072","sql12358072","QW7CppSuVN");
+		 Statement state=(Statement) con1.createStatement();
+				String sq="select AccNo,Balance from AccInfo";
+				ResultSet rset=null;
+				rset=((java.sql.Statement) state).executeQuery(sq);
+				if(acno.equals(rset.getString(2))) {
+				while(rset.next())
+				{   
+					out.print("<tr><td>");
+					out.print(rset.getString(2));
+					out.print("</td>");
+					out.print("<td>");
+					out.print(rset.getInt(4));
+					out.print("</td></tr>");
+					}
+				out.print("</table>");
+				}
+			} catch (SQLException e) {
+				out.println(e);
+			}
+		} catch (ClassNotFoundException e) {
+			   out.println(e);
+	}}}
+
+
+
