@@ -1,0 +1,7 @@
+Create table logintable
+{      id int,
+        Name VARCHAR(10),  
+       AccNo VARCHAR(10),
+         Balance   int
+};
+insert into AccInfo( id,Name,AccNo,Balance) values(1,’ Customer 1’,‘AKS001’,10000);
